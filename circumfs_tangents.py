@@ -4,62 +4,39 @@
 import math
 
 '''
-Es demana calcular els centres Ct1, Ct2...  de les circumf. de radi Rt,
-tangents amb la circumf. amb centre a C1 de radi R1 i amb la circumf
-amb centre a C2 de radi R2; i els punts de tangència.
+Es demana calcular els centres ct1, ct2...  de les circumf. de radi Rt,
+tangents amb la circumf. C1 amb centre a c1 de radi R1,
+i amb la circumf C2 amb centre a c2 de radi R2; 
+i els punts de tangència.
 
 Anàlisi
 
 Sigui d = distància(c1 , c2)
-
-Si d = 0 aleshores c1 i c2 són concènctrics
-
-    Sigui r2 > r1 aleshores
-
-    cas 0 : si rt = (r2 - r1) / 2 el problema té infinites solucions.
-
-        Els centres ct de les circumferències de radi rt es situen sobre la
-        circumferència amb centre a cs = c1 = c2 i radi r1 + rt
-
-        Paramètricament, sigui alfa variant entre 0 i 2*pi
-
-        aleshores sigui cs = c1 = (c1x, c1y)
-        una solució particular ct0 = (ct0x, ct0y) ve donada per :
-        ct0x = c1x + (r1 + rt) * cos(alfa)
-        ct0y = c1y + (r1 + rt) * sin(alfa)
-
-        Aleshores, donada una circumferència ct0 situada sobre la
-        circumferència cs (cs1, csy), els punts de tangència pt1 i pts
-        venen donats per
-
-        p1 :
-        p1x = ct0x + rt * cos(alfa)
-        p1y = ct0y + rt * sin(alfa)
-
-        p2 :
-        p2x = ct0x + rt * cos(alfa + pi)
-        p2y = ct0y + rt * sin(alfa + pi)
-
-    cas 1: si rt <> (r2 - r1) / 2 el problema no té solució
-
+    si rt = (r2 - r1) / 2 el problema té infinites solucions.
+    si rt <> (r2 - r1) / 2 el problema no té solució
 
 Si d > 0 aleshores d1 i d2 no són concèntrics
 
-    cas 2 : si r1 + r2 = d, aleshores c1 i c2 són tangents externes
-    i té dues solucions
+    si r1 + r2 = d, aleshores c1 i c2 són circumferències tangents externes
+    aleshores hi han dues circumferències tangents, independentment de Rt
 
-    cas 3 : si r1 + d = r2, aleshores c1 és interna i tangent a c2
+    si r1 + d = r2, aleshores c1 és interna i tangent a c2
+    aleshores poden haver 0, 1 o dues circumferències tangents depenent de Rt
 
-    cas 4 : si r2 + d = r1, aleshores c2 és interna i tangent a c1
+    si r2 + d = r1, aleshores c2 és interna i tangent a c1
+    aleshores poden haver 0, 1 o dues circumferències tangents depenent de Rt
+
+    si r1 + d < r2, aleshores c1 és interna no concèntrica a c2
+    aleshores poden haver 0, 1 o dues circumferències tangents depenent de Rt
+    
+    si r2 + d < r1, aleshores c2 és interna no concèntrica a c1
+    aleshores poden haver 0, 1 o dues circumferències tangents depenent de Rt
 
     cas 5 : si r1 + r2 < d, aleshores c1 i c2 són extenes l'una a l'altre
     Si r1 + rt > d i r1
 
     cas 6 : si r1 + r2 > d, aleshores c1 i c2 són secants
 
-    cas 7 : si r1 + d < r2, aleshores c1 és interna a c2
-
-    cas 6 : si r2 + d < r1, aleshores c2 és interna a c1
 
 
 Els casos es poden reduir a la solució del problema de calcular els angles
@@ -240,7 +217,8 @@ def solucio_casos_2_5_reduits(c1, r1, c2, r2, rt):
             (pt1x, pt1y), (pt1x, -pt1y),
             (pt2x, pt2y), (pt2x, -pt2y))
 
-if __name__ == "__main__":
+
+def presenta_problema():
     print "Càlcul de circumferències tangents a dues circumferències"
     print "---------------------------------------------------------\n"
     print "Dades: "
@@ -251,6 +229,48 @@ if __name__ == "__main__":
     print " centres de les circumferències tangents"
     print " punts de tangència"
 
+    
+def presenta_dades(c1, r1, c2, r2, rt):
+    print "\nDades del problema :"
+    print "Circumf. 1 : (%f, %f), radi : %f " % (c1[0], c1[1], r1)
+    print "Circumf. 2 : (%f, %f), radi : %f" % (c2[0], c2[1], r2)
+    print "Radi circumf. tangent: %f" % rt
+
+def solucio_iguals():
+    print "Les dues circumferències són iguals."
+    
+def solucio_concentrics(c1, r1, c2, r2, rt):
+    if rt <> ((r1 + r2) / 2):
+        if es_c1_interior_concentrica_a_c2(c1, r1, c2, r2):
+            print "C1 és concèntrica a C2. Rt diferent de (r1 + r2) / 2. No té solucions"
+        else:
+            print "C2 és concèntrica a C1. Rt diferent de (r1 + r2) / 2. No té solucions"        
+    else:
+        if es_c1_interior_concentrica_a_c2(c1, r1, c2, r2):
+            print "C1 és concèntrica a C2. Rt igual a (r1 + r2) / 2. Té infinites solucions"
+        else:
+            print "C2 és concèntrica a C1. Rt igual a (r1 + r2) / 2. Té infinites solucions"
+                
+        print "La circumferència amb centre a (%f, %f) de radi rs = %f" % (c1[0], c1[1], r1 + ((r1 + r2) / 2))
+        print "és el lloc geomètric de les solucions.\n"
+        print "Donat un anle alfa, amb alfa variant entre 0 i 2*Pi"
+        print "els centres de les solucions venen donats per "
+        print "    Csx _= %f + %f * cos(alfa)" % (c1[0], r1 + ((r1 + r2) / 2))
+        print "    Csy _= %f + %f * sin(alfa)" % (c1[1], r1 + ((r1 + r2) / 2))
+        print "i els punts de tangència, per :"
+        print "    Pt1x = %f + %f * cos(alfa)" % (c1[0], r1)
+        print "    Pt1y = %f + %f * sin(alfa)" % (c1[1], r1)            
+        print "    Pt2x = %f + %f * cos(alfa)" % (c1[0], r2)
+        print "    Pt2y = %f + %f * sin(alfa)" % (c1[1], r2)
+
+def solucio_interiors_no_concentrics(c1, r1, c2, r2, rt):
+    pass
+
+
+
+
+
+if __name__ == "__main__":
     # dades del problema
     # punts
     c1 = [1.0, 1.0]
@@ -258,39 +278,19 @@ if __name__ == "__main__":
     r1 = 5.0
     r2 = 3.0
     rt = 12.0
+    
+    presenta_problema()
 
-    print "\nDades del problema :"
-    print "Circumf. 1 : (%f, %f), radi : %f " % (c1[0], c1[1], r1)
-    print "Circumf. 2 : (%f, %f), radi : %f" % (c2[0], c2[1], r2)
-    print "Radi circumf. tangent: %f" % rt
-
+    presenta_dades(c1, r1, c2, r2, rt)
 
     # cercles iguals
     if c1_igual_c2(c1, r1, c2, r2):
-        print "Les dues circumferències són iguals." 
-        
-    
+        solucio_iguals()
+         
     if es_c1_interior_concentrica_a_c2(c1, r1, c2, r2) or es_c2_interior_concentrica_a_c1(c1, r1, c2, r2):
-        if rt <> ((r1 + r2) / 2):
-            if es_c1_interior_concentrica_a_c2(c1, r1, c2, r2):
-                print "C1 és concèntrica a C2. Rt diferent de (r1 + r2) / 2. No té solucions"
-            else:
-                print "C2 és concèntrica a C1. Rt diferent de (r1 + r2) / 2. No té solucions"        
-        else:
-            if es_c1_interior_concentrica_a_c2(c1, r1, c2, r2):
-                print "C1 és concèntrica a C2. Rt igual a (r1 + r2) / 2. Té infinites solucions"
-            else:
-                print "C2 és concèntrica a C1. Rt igual a (r1 + r2) / 2. Té infinites solucions"
-                
-            print "La circumferència amb centre a (%f, %f) de radi rs = %f" % (c1[0], c1[1], r1 + ((r1 + r2) / 2))
-            print "és el lloc geomètric de les solucions.\n"
-            print "Donat un anle alfa, amb alfa variant entre 0 i 2*Pi"
-            print "els centres de les solucions venen donats per "
-            print "    Csx _= %f + %f * cos(alfa)" % (c1[0], r1 + ((r1 + r2) / 2))
-            print "    Csy _= %f + %f * sin(alfa)" % (c1[1], r1 + ((r1 + r2) / 2))
-            print "i els punts de tangència, per :"
-            print "    Pt1x = %f + %f * cos(alfa)" % (c1[0], r1)
-            print "    Pt1y = %f + %f * sin(alfa)" % (c1[1], r1)            
-            print "    Pt2x = %f + %f * cos(alfa)" % (c1[0], r2)
-            print "    Pt2y = %f + %f * sin(alfa)" % (c1[1], r2)
+        solucio_concentrics(c1, r1, c2, r2, rt)
     
+    if es_c1_interior_no_concentrica_a_c2(c1, r1, c2, r2) or es_c2_interior_no_concentrica_a_c1(c1, r1, c2, r2):
+        solucio_interiors_no_concentrics(c1, r1, c2, r2, rt)
+
+
