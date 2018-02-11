@@ -286,7 +286,7 @@ def solucio_interiors_no_concentrics(c1, r1, c2, r2, rt):
         print "només té una sol·lució"
         a = c2[0]
         if (r1 < r2):
-            b = r1 + rt
+            b = r1 + rt 
             c = r2 - rt
         else:
             b = r1 - rt
