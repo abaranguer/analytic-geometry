@@ -205,6 +205,19 @@ def rotacio(p, b):
     
     return [prx, pry]
 
+def reduccio(c1, c2):
+    ct = [c2[0] - c1[0], c2[1] - c1[1]] 
+    
+    # angle rotat, a partir de la diferència entre p1 i p2,
+    # o, més senzill, fent servir un dels punts translacionats 
+    angle = math.atan2(ct[1], ct[0])
+    angle_rotacio =  (math.pi * 0.5) - angle
+    
+    cr1 = [0,0]
+    cr2 = rotacio(ct, angle_rotacio)
+    
+    return [cr1, cr2]
+
 
 def solucio_casos_2_5_reduits(c1, r1, c2, r2, rt):
     a = distancia(c1, c2)
@@ -240,8 +253,8 @@ if __name__ == "__main__":
 
     # dades del problema
     # punts
-    c1 = [0.0, 0.0]
-    c2 = [0.0, 10.0]
+    c1 = [1.0, 1.0]
+    c2 = [10.0, 10.0]
     r1 = 5.0
     r2 = 3.0
     rt = 12.0
@@ -252,3 +265,32 @@ if __name__ == "__main__":
     print "Radi circumf. tangent: %f" % rt
 
 
+    # cercles iguals
+    if c1_igual_c2(c1, r1, c2, r2):
+        print "Les dues circumferències són iguals." 
+        
+    
+    if es_c1_interior_concentrica_a_c2(c1, r1, c2, r2) or es_c2_interior_concentrica_a_c1(c1, r1, c2, r2):
+        if rt <> ((r1 + r2) / 2):
+            if es_c1_interior_concentrica_a_c2(c1, r1, c2, r2):
+                print "C1 és concèntrica a C2. Rt diferent de (r1 + r2) / 2. No té solucions"
+            else:
+                print "C2 és concèntrica a C1. Rt diferent de (r1 + r2) / 2. No té solucions"        
+        else:
+            if es_c1_interior_concentrica_a_c2(c1, r1, c2, r2):
+                print "C1 és concèntrica a C2. Rt igual a (r1 + r2) / 2. Té infinites solucions"
+            else:
+                print "C2 és concèntrica a C1. Rt igual a (r1 + r2) / 2. Té infinites solucions"
+                
+            print "La circumferència amb centre a (%f, %f) de radi rs = %f" % (c1[0], c1[1], r1 + ((r1 + r2) / 2))
+            print "és el lloc geomètric de les solucions.\n"
+            print "Donat un anle alfa, amb alfa variant entre 0 i 2*Pi"
+            print "els centres de les solucions venen donats per "
+            print "    Csx _= %f + %f * cos(alfa)" % (c1[0], r1 + ((r1 + r2) / 2))
+            print "    Csy _= %f + %f * sin(alfa)" % (c1[1], r1 + ((r1 + r2) / 2))
+            print "i els punts de tangència, per :"
+            print "    Pt1x = %f + %f * cos(alfa)" % (c1[0], r1)
+            print "    Pt1y = %f + %f * sin(alfa)" % (c1[1], r1)            
+            print "    Pt2x = %f + %f * cos(alfa)" % (c1[0], r2)
+            print "    Pt2y = %f + %f * sin(alfa)" % (c1[1], r2)
+    
