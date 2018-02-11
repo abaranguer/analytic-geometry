@@ -193,7 +193,7 @@ def reduccio(c1, c2):
     cr1 = [0,0]
     cr2 = rotacio(ct, angle_rotacio)
     
-    return [cr1, cr2]
+    return [cr1, cr2, angle_rotacio]
 
 
 def solucio_casos_2_5_reduits(c1, r1, c2, r2, rt):
@@ -245,7 +245,7 @@ def solucio_concentrics(c1, r1, c2, r2, rt):
             print "C1 és concèntrica a C2. Rt diferent de (r1 + r2) / 2. No té solucions"
         else:
             print "C2 és concèntrica a C1. Rt diferent de (r1 + r2) / 2. No té solucions"        
-    else:
+    else:    
         if es_c1_interior_concentrica_a_c2(c1, r1, c2, r2):
             print "C1 és concèntrica a C2. Rt igual a (r1 + r2) / 2. Té infinites solucions"
         else:
@@ -264,8 +264,60 @@ def solucio_concentrics(c1, r1, c2, r2, rt):
         print "    Pt2y = %f + %f * sin(alfa)" % (c1[1], r2)
 
 def solucio_interiors_no_concentrics(c1, r1, c2, r2, rt):
-    pass
+    d = distancia(c1, c2)
+    
+    if es_c1_interior_no_concentrica_a_c2(c1, r1, c2, r2) or \
+       es_c1_tangent_interior_a_c2(c1, r1, c2, r2):
+        rmin = (r2 - r1 - d) / 2
+        rmax = (r2 - r1 + d) / 2
+         
+    if es_c2_interior_no_concentrica_a_c1(c1, r1, c2, r2) or \
+       es_c2_tangent_interior_a_c1(c1, r1, c2, r2):
+        rmin = (r1 - r2 - d) / 2
+        rmax = (r1 - r2 + d) / 2
+    
+    # reducció
+    [c1r, c2r, angle_rotacio] = reduccio(c1, c2)
+        
+    if (rt < rmin) or (rt > rmax):
+        print "No té solucions"
 
+    if (rt == rmin) or (rt == rmax):
+        print "només té una sol·lució"
+        a = c2[0]
+        if (r1 < r2):
+            b = r1 + rt
+            c = r2 - rt
+        else:
+            b = r1 - rt
+            c = r2 + rt
+        
+        angle_bc = math.acos( (pow (b, 2) + pow(c, 2) - pow(a, 2)) / (2 * b *c ) )
+        angle_ac = math.acos( (pow (a, 2) + pow(c, 2) - pow(c, 2)) / (2 * a *c ) )
+        angle_ab = math.pi - angle_bc  - angle_ac
+
+        # centre
+        csx = b * math.cos(angle_ab)
+        csy = 0
+        # punts de tangència
+        ps1 = [csx - rt, 0]
+        ps2 = [csx + rt, 0]
+        
+        # desfer rotació i traslació
+        csr = rotacio([csx, csy], -angle_rotacio)
+        ps1r = rotacio(ps1, -angle_rotacio)
+        ps2r = rotacio(ps2, -angle_rotacio)
+        
+        csrt = desfer_translacio(csr, c1)
+        ps1rt = desfer_translacio(ps1r, c1)
+        ps2rt = desfer_translacio(ps2r, c1)
+        
+        # mostrar resultats
+        # TODO:
+
+
+    if (rt > rmin) and (rt < rmax):
+        print "té dues sol·lucions"
 
 
 
@@ -290,7 +342,10 @@ if __name__ == "__main__":
     if es_c1_interior_concentrica_a_c2(c1, r1, c2, r2) or es_c2_interior_concentrica_a_c1(c1, r1, c2, r2):
         solucio_concentrics(c1, r1, c2, r2, rt)
     
-    if es_c1_interior_no_concentrica_a_c2(c1, r1, c2, r2) or es_c2_interior_no_concentrica_a_c1(c1, r1, c2, r2):
+    if es_c1_interior_no_concentrica_a_c2(c1, r1, c2, r2) or \
+       es_c2_interior_no_concentrica_a_c1(c1, r1, c2, r2) or \
+       es_c1_tangent_interior_a_c2(c1, r1, c2, r2) or \
+       es_c2_tangent_interior_a_c1(c1, r1, c2, r2):
         solucio_interiors_no_concentrics(c1, r1, c2, r2, rt)
 
 
